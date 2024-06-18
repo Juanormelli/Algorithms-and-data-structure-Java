@@ -1,135 +1,109 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DinamycProg {
 
     public static void main(String[] args) {
-        var list = new HashMap<>();
-        list.put("Water", new int[2]);
-        list.put("Book", new int[2]);
-        list.put("Food", new int[2]);
-        list.put("Casaco", new int[2]);
-        list.put("Camera", new int[2]);
+        var vlList = new HashMap<>();
+        vlList.put("Water", new int[2]);
+        vlList.put("Book", new int[2]);
+        vlList.put("Food", new int[2]);
+        vlList.put("Casaco", new int[2]);
+        vlList.put("Camera", new int[2]);
 
-        var enumerator = new HashMap<>();
-        enumerator.put(0, "Water");
-        enumerator.put(1, "Book");
-        enumerator.put(2, "Food");
-        enumerator.put(3, "Casaco");
-        enumerator.put(4, "Camera");
+        var vlEnumerator = new HashMap<>();
+        vlEnumerator.put(0, "Water");
+        vlEnumerator.put(1, "Book");
+        vlEnumerator.put(2, "Food");
+        vlEnumerator.put(3, "Casaco");
+        vlEnumerator.put(4, "Camera");
 
-        int[] Water = (int []) list.get("Water");
+        int[] Water = (int []) vlList.get("Water");
         Water[0] = 3;
         Water[1] = 10;
 
-        int[] Book = (int []) list.get("Book");
+        int[] Book = (int []) vlList.get("Book");
         Book[0] = 1;
         Book[1] = 3;
 
-        int[] Food = (int []) list.get("Food");
+        int[] Food = (int []) vlList.get("Food");
         Food[0] = 2;
         Food[1] = 9;
 
-        int[] Casaco = (int []) list.get("Casaco");
+        int[] Casaco = (int []) vlList.get("Casaco");
         Casaco[0] = 2;
         Casaco[1] = 5;
 
-        int[] Camera = (int []) list.get("Camera");
+        int[] Camera = (int []) vlList.get("Camera");
         Camera[0] = 1;
         Camera[1] = 6;
 
-
-
-        List best = BestDecision(list, 6, enumerator);
-
+        int viSumOfBestDecision = BestDecision(vlList, 6, vlEnumerator);
+        System.out.println(viSumOfBestDecision);
         System.out.println(SubStr("Mario", "Maria"));
     }
 
-    public static List<String> BestDecision(HashMap integerList, int maxKg, HashMap lhmEnumarator){
-        int Best = 0;
-        int[][] tab = new int[integerList.size()][6];
-        List<String> names = new ArrayList<>();
-        for (int i = 0; i <=integerList.size() ; i++) {
-            for (int j = 1; j <= maxKg ; j++) {
-                int[] teste = (int[]) integerList.get(lhmEnumarator.get(i));
-                if (teste == null){
-                    return names;
+    public static int BestDecision(HashMap liList, int liMaxKg, HashMap lhmEnumarator){
+        int viSumOfBestDecision = 0;
+        int[][] vtbTable = new int[liList.size()][6];
+
+        for (int i = 0; i <= liList.size() ; i++) {
+            for (int j = 1; j <= liMaxKg; j++) {
+                int[] element = (int[]) liList.get(lhmEnumarator.get(i));
+                if (element == null) {
+                    return viSumOfBestDecision;
                 }
-                if(i == 0){
-                    if(j == maxKg){
-                         names.add((String)lhmEnumarator.get(i));
+                if (i == 0) {
+                    if (element[0] <= j) {
+                        vtbTable[i][j - 1] = element[1];
+                        viSumOfBestDecision = element[1];
+                    } else {
+                        vtbTable[i][j - 1] = 0;
                     }
-
-                    if (teste[0] <=  j){
-                        tab[i][j - 1] = teste[1];
-                        Best = teste[1];
-
-
-                    }
-                    else {
-                        tab[i][j - 1] = 0;
-                    }
-
-
-                }
-                else {
-                    if (teste[0] <=  j) {
-                        if(j - 1 - teste[0] < 0){
-                            if(tab[i - 1][j - 1] > teste[1]){
-                                tab[i][j - 1] = tab[i - 1][j - 1];
+                } else {
+                    if (element[0] <= j) {
+                        if (j - 1 - element[0] < 0) {
+                            if (vtbTable[i - 1][j - 1] > element[1]) {
+                                vtbTable[i][j - 1] = vtbTable[i - 1][j - 1];
+                            } else {
+                                vtbTable[i][j - 1] = element[1];
                             }
-                            else{
-                                tab[i][j - 1] = teste[1];
-                            }
+                        } else {
+                            vtbTable[i][j - 1] = Math.max(vtbTable[i - 1][j - 1], element[1] + vtbTable[i - 1][j - 1 - element[0]]);
 
-                        }
-                        else {
-                            tab[i][j - 1] = Math.max(tab[i - 1][j - 1], teste[1] + tab[i - 1][j - 1 - teste[0]]);
-
-                            if (tab[i][j - 1] > Best) {
-                                Best = tab[i][j - 1];
-                                names.remove(0);
-                                names.add((String) lhmEnumarator.get(i));
-
+                            if (vtbTable[i][j - 1] > viSumOfBestDecision) {
+                                viSumOfBestDecision = vtbTable[i][j - 1];
                             }
                         }
-                    }
-                    else {
-                        tab[i][j - 1] = tab[i - 1][j - 1];
+                    } else {
+                        vtbTable[i][j - 1] = vtbTable[i - 1][j - 1];
                     }
 
                 }
-
-
             }
-
         }
-        System.out.println(names);
-        return names;
+        return viSumOfBestDecision;
     }
 
-    public static int SubStr(String str1, String str2){
-        int[][] tab = new int[str1.length()][str2.length()];
-        int numChar = 0;
-        for (int i = 0; i< str1.length(); i++){
-            for (int j=0; j<str2.length(); j++){
-                if (str1.charAt(i) == str2.charAt(j) && i==0){
-                    tab[i][j] = 1;
-                    numChar = 1;
+    public static int SubStr(String lsString1, String lsString2){
+        int[][] vtbTable = new int[lsString1.length()][lsString2.length()];
+        int viNumOfCharSubStr = 0;
+        for (int i = 0; i< lsString1.length(); i++){
+            for (int j = 0; j< lsString2.length(); j++){
+                if (lsString1.charAt(i) == lsString2.charAt(j) && i==0){
+                    vtbTable[i][j] = 1;
+                    viNumOfCharSubStr = 1;
                 }
-                else if (str1.charAt(i) == str2.charAt(j) && i!=0){
+                else if (lsString1.charAt(i) == lsString2.charAt(j) && i!=0){
                     if ( j - 1 >=0){
-                        tab[i][j] = tab[i-1][j-1] + 1;
-                        numChar = tab[i][j];
+                        vtbTable[i][j] = vtbTable[i-1][j-1] + 1;
+                        viNumOfCharSubStr = vtbTable[i][j];
                     }
                 }
                 else{
-                    tab[i][j] = 0;
+                    vtbTable[i][j] = 0;
                 }
             }
         }
-
-        return numChar;
+        return viNumOfCharSubStr;
     }
 }
