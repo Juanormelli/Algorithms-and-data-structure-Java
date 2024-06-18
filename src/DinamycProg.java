@@ -39,11 +39,11 @@ public class DinamycProg {
         Camera[0] = 1;
         Camera[1] = 6;
 
-        System.out.println(BestDecision(list, 6, enumerator));
+
 
         List best = BestDecision(list, 6, enumerator);
 
-        //System.out.println(best.get(1));
+        System.out.println(SubStr("Mario", "Maria"));
     }
 
     public static List<String> BestDecision(HashMap integerList, int maxKg, HashMap lhmEnumarator){
@@ -107,5 +107,29 @@ public class DinamycProg {
         }
         System.out.println(names);
         return names;
+    }
+
+    public static int SubStr(String str1, String str2){
+        int[][] tab = new int[str1.length()][str2.length()];
+        int numChar = 0;
+        for (int i = 0; i< str1.length(); i++){
+            for (int j=0; j<str2.length(); j++){
+                if (str1.charAt(i) == str2.charAt(j) && i==0){
+                    tab[i][j] = 1;
+                    numChar = 1;
+                }
+                else if (str1.charAt(i) == str2.charAt(j) && i!=0){
+                    if ( j - 1 >=0){
+                        tab[i][j] = tab[i-1][j-1] + 1;
+                        numChar = tab[i][j];
+                    }
+                }
+                else{
+                    tab[i][j] = 0;
+                }
+            }
+        }
+
+        return numChar;
     }
 }
